@@ -1,10 +1,18 @@
 //TMDB 
 
+/*
+Define our API credentials.
+*/
+
 const API_KEY = 'api_key=1cf50e6248dc270629e802686245c2c8';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&'+API_KEY;
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 const searchURL = BASE_URL + '/search/movie?'+API_KEY;
+
+/*
+Define the available genres in the API and the corresponding IDs.
+*/
 
 const genres = [
     {
@@ -85,6 +93,10 @@ const genres = [
     }
   ]
 
+/*
+Define our important elements
+*/
+
 const main = document.getElementById('main');
 const form =  document.getElementById('form');
 const search = document.getElementById('search');
@@ -94,15 +106,25 @@ const prev = document.getElementById('prev')
 const next = document.getElementById('next')
 const current = document.getElementById('current')
 
-var currentPage = 1;
+var currentPage = 1; //start on page 1.
 var nextPage = 2;
 var prevPage = 3;
 var lastUrl = '';
-var totalPages = 100;
+var totalPages = 100; //maximum number of pages.
 
-var selectedGenre = []
+var selectedGenre = []; //array of selected genres.
 setGenre();
+
+
+/*
+Below our slider content on the homepage we have a list of clickable genre buttons.  This function loops through our defined genres array and creates a clickable button for each one.
+
+When clicked we will add the genre to our selectedGenre array and we then do an API call via our getMovies() function with the relevant genres separated by commas.  We then call highlightSelection to highlight our selections.
+
+*/
+
 function setGenre() {
+
     tagsEl.innerHTML= '';
     genres.forEach(genre => {
         const t = document.createElement('div');
@@ -131,6 +153,11 @@ function setGenre() {
     })
 }
 
+/*
+Highlights he selected genres.
+*/
+
+
 function highlightSelection() {
     const tags = document.querySelectorAll('.tag');
     tags.forEach(tag => {
@@ -146,6 +173,11 @@ function highlightSelection() {
 
 }
 
+
+/*
+Clears our selected genres
+*/
+
 function clearBtn(){
     let clearBtn = document.getElementById('clear');
     if(clearBtn){
@@ -159,16 +191,24 @@ function clearBtn(){
         clear.addEventListener('click', () => {
             selectedGenre = [];
             setGenre();            
-            getMovies(API_URL);
+            getMovies(API_URL); //retrieve the initial data set.
         })
         tagsEl.append(clear);
     }
     
 }
 
-getMovies(API_URL);
+
+
+getMovies(API_URL); //retrieve the initial data set.
+
+/*
+This will do an API URL call to retrieve our movie results based on our provided URL.  The provided URL may contain genre filter and/or page number.
+*/
+
 
 function getMovies(url) {
+
   lastUrl = url;
     fetch(url).then(res => res.json()).then(data => {
         console.log(data.results)
@@ -202,6 +242,11 @@ function getMovies(url) {
 
 }
 
+/*
+This will take the result received by our getMovies API function and format some HTML to add them to the page nicely.
+
+Further we bind the "Know More" button to load an overlay with more information
+*/
 
 function showMovies(data) {
     main.innerHTML = '';
@@ -236,6 +281,14 @@ function showMovies(data) {
         })
     })
 }
+
+
+
+
+/*
+When users click the Know More button we show an overlay with a slideshow with a youtube embed of the trailer(s) available
+*/
+
 
 const overlayContent = document.getElementById('overlay-content');
 /* Open when someone clicks on the span element */
@@ -292,6 +345,9 @@ function closeNav() {
 var activeSlide = 0;
 var totalVideos = 0;
 
+
+/* Allows you to navigate through the trailer slideshow in the overlay */
+
 function showVideos(){
   let embedClasses = document.querySelectorAll('.embed');
   let dots = document.querySelectorAll('.dot');
@@ -340,6 +396,10 @@ rightArrow.addEventListener('click', () => {
 })
 
 
+/*
+On the main list of movies we show a rating with a background colour that changes based on the rating.
+*/
+
 function getColor(vote) {
     if(vote>= 8){
         return 'green'
@@ -349,6 +409,10 @@ function getColor(vote) {
         return 'red'
     }
 }
+
+/*
+Handle the search field on submit/enter
+*/
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -364,17 +428,23 @@ form.addEventListener('submit', (e) => {
 
 })
 
+//bind our previous page action.
 prev.addEventListener('click', () => {
   if(prevPage > 0){
     pageCall(prevPage);
   }
 })
 
+//bind our next page action.
 next.addEventListener('click', () => {
   if(nextPage <= totalPages){
     pageCall(nextPage);
   }
 })
+
+/*
+This generates the proper URL we pass to getMovies with the pagenumber appended nicely.
+*/
 
 function pageCall(page){
   let urlSplit = lastUrl.split('?');
