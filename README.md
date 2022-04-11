@@ -56,9 +56,8 @@ reliance on third parties.
 
 Fix buttons at the top of the page and in the carousel that are not currently working.
 
-### Screenshot
-
-![Click](.//images/batman.jpg)
-
 ### Links
 
+Deployed Link: https://trietryannguyen.github.io/project-group-1/
+
+Repo: https://github.com/trietryannguyen/project-group-1/
